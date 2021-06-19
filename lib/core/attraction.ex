@@ -18,4 +18,12 @@ defmodule Globolive.Core.Attraction do
             start: nil,
             finish: nil,
             location: ""
+
+  @doc """
+  Create a new attraction with the given attributes.
+  """
+  @spec new(Enum.t()) :: t
+  def new(attributes) do
+    struct!(__MODULE__, attributes)
+  end
 end
