@@ -14,7 +14,21 @@ defmodule Globolive.Factory do
       finish: DateTime.utc_now() |> DateTime.add(3600, :second),
       location: "Some Venue"
     }
-    |> Map.merge(attributes)
+    |> Map.merge(to_map(attributes))
+  end
+
+  @doc """
+  Creates a map containing the fields necessary to build a valid Event struct.
+  """
+  @spec event_fields(map) :: map
+  def event_fields(attributes \\ %{}) do
+    %{
+      name: "Event #{random_number()}",
+      start: DateTime.utc_now(),
+      finish: DateTime.utc_now() |> DateTime.add(7200, :second),
+      location: "Some Venue"
+    }
+    |> Map.merge(to_map(attributes))
   end
 
   # Provides a random number between 1 and 1,000.
@@ -22,4 +36,9 @@ defmodule Globolive.Factory do
   defp random_number do
     :rand.uniform(1_000)
   end
+
+  # Ensures incoming attributes are in map form.
+  @spec to_map(Enum.t()) :: map
+  defp to_map(%{} = attributes), do: attributes
+  defp to_map(attributes), do: Map.new(attributes)
 end
