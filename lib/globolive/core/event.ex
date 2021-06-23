@@ -12,7 +12,8 @@ defmodule Globolive.Core.Event do
           start: DateTime.t(),
           finish: DateTime.t(),
           location: String.t(),
-          attractions: [Attraction.t()]
+          attractions: [Attraction.t()],
+          attraction_count: non_neg_integer
         }
 
   @enforce_keys [:name, :start, :finish, :location]
@@ -20,7 +21,8 @@ defmodule Globolive.Core.Event do
             start: nil,
             finish: nil,
             location: "",
-            attractions: []
+            attractions: [],
+            attraction_count: 0
 
   @doc """
   Create a new event with the given attributes.
@@ -39,7 +41,8 @@ defmodule Globolive.Core.Event do
 
     %__MODULE__{
       event
-      | attractions: [attraction | event.attractions]
+      | attractions: [attraction | event.attractions],
+        attraction_count: event.attraction_count + 1
     }
   end
 end

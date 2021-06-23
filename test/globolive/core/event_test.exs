@@ -26,5 +26,14 @@ defmodule Globolive.Core.EventTest do
 
       assert %Event{attractions: [%Attraction{}, %Attraction{}]} = event
     end
+
+    test "increments the count of all attractions" do
+      event =
+        Event.new(event_fields())
+        |> Event.add_attraction(attraction_fields())
+        |> Event.add_attraction(attraction_fields())
+
+      assert %Event{attraction_count: 2} = event
+    end
   end
 end

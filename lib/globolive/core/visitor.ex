@@ -12,9 +12,7 @@ defmodule Globolive.Core.Visitor do
           email: String.t(),
           event: Event.t(),
           arrived_at: DateTime.t() | nil,
-          visited: [Attraction.t()],
-          visited_count: non_neg_integer,
-          unvisited_count: non_neg_integer
+          visited: MapSet.t(Attraction.t())
         }
 
   @enforce_keys [:name, :email, :event]
@@ -22,9 +20,7 @@ defmodule Globolive.Core.Visitor do
             email: "",
             event: nil,
             arrived_at: nil,
-            visited: [],
-            visited_count: 0,
-            unvisited_count: nil
+            visited: MapSet.new()
 
   @doc """
   Create a new visitor for the given event.
@@ -34,8 +30,7 @@ defmodule Globolive.Core.Visitor do
     %__MODULE__{
       name: name,
       email: email,
-      event: event,
-      unvisited_count: length(event.attractions)
+      event: event
     }
   end
 
