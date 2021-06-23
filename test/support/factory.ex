@@ -31,6 +31,18 @@ defmodule Globolive.Factory do
     |> Map.merge(to_map(attributes))
   end
 
+  @doc """
+  Creates a fake name and email combination.
+  """
+  @spec visitor_fields :: {name :: String.t(), email :: String.t()}
+  def visitor_fields do
+    random = random_number()
+    name = "Person #{random}"
+    email = "person-#{random}@example.com"
+
+    {name, email}
+  end
+
   # Provides a random number between 1 and 1,000.
   @spec random_number :: integer
   defp random_number do

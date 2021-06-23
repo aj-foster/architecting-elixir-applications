@@ -23,4 +23,17 @@ defmodule Globolive.Core.Visitor do
             visited: [],
             visited_count: 0,
             unvisited_count: nil
+
+  @doc """
+  Create a new visitor for the given event.
+  """
+  @spec new(String.t(), String.t(), Event.t()) :: t
+  def new(name, email, event) do
+    %__MODULE__{
+      name: name,
+      email: email,
+      event: event,
+      unvisited_count: length(event.attractions)
+    }
+  end
 end
