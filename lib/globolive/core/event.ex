@@ -45,4 +45,13 @@ defmodule Globolive.Core.Event do
         attraction_count: event.attraction_count + 1
     }
   end
+
+  @doc """
+  Remove an attraction, e.g. when a visitor checks in to it.
+  """
+  @spec remove_attraction(t, Attraction.t()) :: t
+  def remove_attraction(event, attraction) do
+    attractions = Enum.reject(event.attractions, &(&1 == attraction))
+    %__MODULE__{event | attractions: attractions, attraction_count: length(attractions)}
+  end
 end
