@@ -48,11 +48,10 @@ defmodule Globolive.Core.Visitor do
   @spec mark_checkin(t, Attraction.t()) :: t
   def mark_checkin(visitor, attraction) do
     %__MODULE__{event: event, visited: visited} = visitor
-    %Event{attractions: attractions} = event
 
     %__MODULE__{
       visitor
-      | event: %Event{event | attractions: List.delete(attractions, attraction)},
+      | event: Event.remove_attraction(event, attraction),
         visited: MapSet.put(visited, attraction)
     }
   end
