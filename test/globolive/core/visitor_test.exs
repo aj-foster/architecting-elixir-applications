@@ -13,4 +13,16 @@ defmodule Globolive.Core.VisitorTest do
                Visitor.new(name, email, event)
     end
   end
+
+  describe "mark_arrived/2" do
+    test "adds an arrival time" do
+      {name, email} = visitor_fields()
+      event = Event.new(event_fields())
+
+      visitor = Visitor.new(name, email, event)
+      timestamp = DateTime.utc_now()
+
+      assert %Visitor{arrived_at: ^timestamp} = Visitor.mark_arrived(visitor, timestamp)
+    end
+  end
 end

@@ -11,6 +11,7 @@ defmodule Globolive.Core.Visitor do
           name: String.t(),
           email: String.t(),
           event: Event.t(),
+          arrived_at: DateTime.t() | nil,
           visited: [Attraction.t()],
           visited_count: non_neg_integer,
           unvisited_count: non_neg_integer
@@ -20,6 +21,7 @@ defmodule Globolive.Core.Visitor do
   defstruct name: "",
             email: "",
             event: nil,
+            arrived_at: nil,
             visited: [],
             visited_count: 0,
             unvisited_count: nil
@@ -35,5 +37,13 @@ defmodule Globolive.Core.Visitor do
       event: event,
       unvisited_count: length(event.attractions)
     }
+  end
+
+  @doc """
+  Mark a visitor as checked in at the event.
+  """
+  @spec mark_arrived(t, DateTime.t()) :: t
+  def mark_arrived(visitor, timestamp) do
+    %__MODULE__{visitor | arrived_at: timestamp}
   end
 end
