@@ -41,4 +41,19 @@ defmodule Globolive.Core.Visitor do
   def mark_arrived(visitor, timestamp) do
     %__MODULE__{visitor | arrived_at: timestamp}
   end
+
+  @doc """
+  Mark a visitor as having checked in at an attraction.
+  """
+  @spec mark_checkin(t, Attraction.t()) :: t
+  def mark_checkin(visitor, attraction) do
+    %__MODULE__{event: event, visited: visited} = visitor
+    %Event{attractions: attractions} = event
+
+    %__MODULE__{
+      visitor
+      | event: %Event{event | attractions: List.delete(attractions, attraction)},
+        visited: MapSet.put(visited, attraction)
+    }
+  end
 end
