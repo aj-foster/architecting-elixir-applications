@@ -20,8 +20,7 @@ defmodule Globolive.Core.EventTest do
 
     test "adds additional attractions to an event" do
       event =
-        Event.new(event_fields())
-        |> Event.add_attraction(attraction_fields())
+        event_with_attraction()
         |> Event.add_attraction(attraction_fields())
 
       assert %Event{attractions: [%Attraction{}, %Attraction{}]} = event
@@ -29,8 +28,7 @@ defmodule Globolive.Core.EventTest do
 
     test "increments the count of all attractions" do
       event =
-        Event.new(event_fields())
-        |> Event.add_attraction(attraction_fields())
+        event_with_attraction()
         |> Event.add_attraction(attraction_fields())
 
       assert %Event{attraction_count: 2} = event
@@ -52,14 +50,12 @@ defmodule Globolive.Core.EventTest do
     end
 
     test "decrements the count of all attractions" do
-      attraction_one = attraction_fields(name: "Attraction A")
-      attraction_two = attraction_fields(name: "Attraction B")
+      attraction = attraction_fields(name: "Attraction")
 
       event =
-        Event.new(event_fields())
-        |> Event.add_attraction(attraction_one)
-        |> Event.add_attraction(attraction_two)
-        |> Event.remove_attraction(Attraction.new(attraction_one))
+        event_with_attraction()
+        |> Event.add_attraction(attraction)
+        |> Event.remove_attraction(Attraction.new(attraction))
 
       assert %Event{attraction_count: 1} = event
     end

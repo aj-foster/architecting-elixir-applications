@@ -7,7 +7,7 @@ defmodule Globolive.Core.VisitorTest do
   describe "new/3" do
     test "creates a new visitor" do
       {name, email} = visitor_fields()
-      event = Event.new(event_fields())
+      event = event_with_attraction()
 
       assert %Visitor{name: ^name, email: ^email, event: %Event{}} =
                Visitor.new(name, email, event)
@@ -17,7 +17,7 @@ defmodule Globolive.Core.VisitorTest do
   describe "mark_arrived/2" do
     test "adds an arrival time" do
       {name, email} = visitor_fields()
-      event = Event.new(event_fields())
+      event = event_with_attraction()
 
       visitor = Visitor.new(name, email, event)
       timestamp = DateTime.utc_now()

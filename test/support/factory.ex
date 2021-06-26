@@ -2,6 +2,7 @@ defmodule Globolive.Factory do
   @moduledoc """
   Provides helpers for creating testing data.
   """
+  alias Globolive.Core.Event
 
   @doc """
   Creates a map containing the fields necessary to build a valid Attraction struct.
@@ -29,6 +30,23 @@ defmodule Globolive.Factory do
       location: "Some Venue"
     }
     |> Map.merge(to_map(attributes))
+  end
+
+  @doc """
+  Creates an event with an associated attraction.
+  """
+  @spec event_with_attraction(map, map) :: Event.t()
+  def event_with_attraction(event_attributes \\ %{}, attraction_attributes \\ %{}) do
+    event =
+      event_attributes
+      |> event_fields()
+      |> Event.new()
+
+    attraction =
+      attraction_attributes
+      |> attraction_fields()
+
+    Event.add_attraction(event, attraction)
   end
 
   @doc """
