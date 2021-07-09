@@ -14,10 +14,7 @@ defmodule Globolive.Core.Attraction do
         }
 
   @enforce_keys [:name, :start, :finish, :location]
-  defstruct name: "",
-            start: nil,
-            finish: nil,
-            location: ""
+  defstruct [:name, :start, :finish, :location]
 
   @doc """
   Create a new attraction with the given attributes.
