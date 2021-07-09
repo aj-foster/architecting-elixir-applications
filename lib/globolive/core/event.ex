@@ -54,4 +54,13 @@ defmodule Globolive.Core.Event do
     attractions = Enum.reject(event.attractions, &(&1 == attraction))
     %__MODULE__{event | attractions: attractions, attraction_count: length(attractions)}
   end
+
+  defimpl Globolive.Core.Schedulable do
+    def duration(%Globolive.Core.Event{
+          start: start,
+          finish: finish
+        }) do
+      DateTime.diff(finish, start, :second)
+    end
+  end
 end

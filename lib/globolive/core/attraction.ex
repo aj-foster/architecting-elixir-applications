@@ -23,4 +23,13 @@ defmodule Globolive.Core.Attraction do
   def new(attributes) do
     struct!(__MODULE__, attributes)
   end
+
+  defimpl Globolive.Core.Schedulable do
+    def duration(%Globolive.Core.Attraction{
+          start: start,
+          finish: finish
+        }) do
+      DateTime.diff(finish, start, :second)
+    end
+  end
 end

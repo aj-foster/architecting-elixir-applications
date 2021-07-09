@@ -2,7 +2,7 @@ defmodule Globolive.Core.EventTest do
   use ExUnit.Case
   import Globolive.Factory
 
-  alias Globolive.Core.{Attraction, Event}
+  alias Globolive.Core.{Attraction, Event, Schedulable}
 
   describe "new/1" do
     test "creates a new event" do
@@ -44,6 +44,14 @@ defmodule Globolive.Core.EventTest do
 
     test "decrements the count of all attractions", %{event: event, attraction: attraction} do
       assert %Event{attraction_count: 0} = Event.remove_attraction(event, attraction)
+    end
+  end
+
+  describe "Schedulable.duration/1" do
+    test "returns duration of the event" do
+      now = DateTime.utc_now()
+      event = event_with_attraction(start: now, finish: DateTime.add(now, 3333))
+      assert Schedulable.duration(event) == 3333
     end
   end
 
