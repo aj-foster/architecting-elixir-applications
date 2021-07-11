@@ -12,39 +12,57 @@ defmodule Globolive.Boundary.EventManager do
   # Public API
   #
 
-  @spec start_link(term) :: GenServer.on_start()
-  def start_link(_opts) do
-    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+  @doc """
+  Start an Event Manager process.
+
+  ## Options
+
+    * `events`: List of events to hydrate on start-up.
+    * `name`: Name of the event manager process.
+
+  """
+  @spec start_link(Keyword.t()) :: GenServer.on_start()
+  def start_link(opts \\ []) do
+    events = opts[:events] || []
+    name = opts[:name] || __MODULE__
+    GenServer.start_link(__MODULE__, events, name: name)
   end
 
-  @spec add_event(map) :: :ok
-  def add_event(event_fields) do
-    GenServer.call(__MODULE__, {:add_event, event_fields})
+  @spec add_event(GenServer.name(), map) :: :ok
+  def add_event(server \\ __MODULE__, event_fields) do
+    GenServer.call(server, {:add_event, event_fields})
   end
 
-  @spec add_attraction_to_event(String.t(), map) :: :ok
-  def add_attraction_to_event(event_name, attraction_fields) do
-    GenServer.call(__MODULE__, {:add_attraction_to_event, event_name, attraction_fields})
+  @spec add_attraction_to_event(GenServer.name(), String.t(), map) :: :ok
+  def add_attraction_to_event(server \\ __MODULE__, event_name, attraction_fields) do
+    GenServer.call(server, {:add_attraction_to_event, event_name, attraction_fields})
   end
 
-  @spec get_event_by_name(String.t()) :: Event.t()
-  def get_event_by_name(event_name) do
-    GenServer.call(__MODULE__, {:get_event_by_name, event_name})
+  @spec get_event_by_name(GenServer.name(), String.t()) :: Event.t()
+  def get_event_by_name(server \\ __MODULE__, event_name) do
+    GenServer.call(server, {:get_event_by_name, event_name})
   end
 
   #
   # Private API
   #
 
-  @spec init(state) :: {:ok, state} | {:stop, String.t()}
-  def init(events) do
-    if Enum.all?(events, fn {name, event} -> is_binary(name) and is_struct(event, Event) end) do
+  @doc false
+  @spec init([Event.t()]) :: {:ok, state} | {:stop, String.t()}
+  def init(event_list) do
+    if Enum.all?(event_list, fn event -> is_struct(event, Event) end) do
+      events =
+        Enum.reduce(event_list, %{}, fn event, events ->
+          Map.put(events, event.name, event)
+        end)
+
       {:ok, events}
     else
-      {:stop, "Pre-seeded events must be given in %{name => event} form"}
+      {:stop, "Pre-seeded events must be given as Event structs"}
     end
   end
 
+  @doc false
   @spec handle_call(term, GenServer.from(), state) :: {:reply, term, state}
   def handle_call(message, from, events)
 
