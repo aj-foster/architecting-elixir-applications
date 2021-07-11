@@ -32,4 +32,32 @@ defmodule Globolive.Boundary.EventManagerTest do
       assert %Event{} = EventManager.get_event_by_name("Event1")
     end
   end
+
+  describe "add_attraction_event/3" do
+    test "adds an attraction to an existing event" do
+      events = [event_with_attraction(name: "Event1")]
+      EventManager.start_link(events: events)
+      assert :ok = EventManager.add_attraction_to_event("Event1", attraction_fields())
+      assert %Event{attraction_count: 2} = EventManager.get_event_by_name("Event1")
+    end
+
+    test "returns error for a non-existent event" do
+      EventManager.start_link()
+      assert :error = EventManager.add_attraction_to_event("Non-existent", attraction_fields())
+    end
+  end
+
+  describe "get_event_by_name/2" do
+    test "returns an event by its name" do
+      events = [event_with_attraction(name: "Event1"), event_with_attraction(name: "Event2")]
+      EventManager.start_link(events: events)
+      assert %Event{name: "Event1"} = EventManager.get_event_by_name("Event1")
+    end
+
+    test "returns nothing for a non-existent event" do
+      events = [event_with_attraction(name: "Event1"), event_with_attraction(name: "Event2")]
+      EventManager.start_link(events: events)
+      assert is_nil(EventManager.get_event_by_name("Non-existent"))
+    end
+  end
 end

@@ -73,12 +73,16 @@ defmodule Globolive.Boundary.EventManager do
   end
 
   def handle_call({:add_attraction_to_event, event_name, attraction_fields}, _from, events) do
-    events =
-      Map.update!(events, event_name, fn event ->
-        Event.add_attraction(event, attraction_fields)
-      end)
+    case events[event_name] do
+      nil ->
+        {:reply, :error, events}
 
-    {:reply, :ok, events}
+      event ->
+        event = Event.add_attraction(event, attraction_fields)
+        events = Map.put(events, event_name, event)
+
+        {:reply, :ok, events}
+    end
   end
 
   def handle_call({:get_event_by_name, event_name}, _from, events) do
