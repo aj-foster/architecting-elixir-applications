@@ -28,16 +28,19 @@ defmodule Globolive.Boundary.EventManager do
     GenServer.start_link(__MODULE__, events, name: name)
   end
 
+  @doc "Add an event to the state of the event manager."
   @spec add_event(GenServer.name(), map) :: :ok
   def add_event(server \\ __MODULE__, event_fields) do
     GenServer.call(server, {:add_event, event_fields})
   end
 
+  @doc "Add an attraction to the event with the given name."
   @spec add_attraction_to_event(GenServer.name(), String.t(), map) :: :ok
   def add_attraction_to_event(server \\ __MODULE__, event_name, attraction_fields) do
     GenServer.call(server, {:add_attraction_to_event, event_name, attraction_fields})
   end
 
+  @doc "Get an event by its name."
   @spec get_event_by_name(GenServer.name(), String.t()) :: Event.t()
   def get_event_by_name(server \\ __MODULE__, event_name) do
     GenServer.call(server, {:get_event_by_name, event_name})
