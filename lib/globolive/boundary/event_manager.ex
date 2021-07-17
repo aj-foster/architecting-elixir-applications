@@ -41,7 +41,7 @@ defmodule Globolive.Boundary.EventManager do
   end
 
   @doc "Get an event by its name."
-  @spec get_event_by_name(GenServer.name(), String.t()) :: Event.t()
+  @spec get_event_by_name(GenServer.name(), String.t()) :: Event.t() | nil
   def get_event_by_name(server \\ __MODULE__, event_name) do
     GenServer.call(server, {:get_event_by_name, event_name})
   end
