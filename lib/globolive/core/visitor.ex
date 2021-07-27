@@ -35,6 +35,14 @@ defmodule Globolive.Core.Visitor do
   end
 
   @doc """
+  Check whether the visitor has arrived at the event.
+  """
+  @spec arrived?(t) :: boolean
+  def arrived?(visitor) do
+    not is_nil(visitor.arrived_at)
+  end
+
+  @doc """
   Mark a visitor as checked in at the event.
   """
   @spec mark_arrived(t, DateTime.t()) :: t
@@ -54,5 +62,13 @@ defmodule Globolive.Core.Visitor do
       | event: Event.remove_attraction(event, attraction),
         visited: MapSet.put(visited, attraction)
     }
+  end
+
+  @doc """
+  Check whether a visitor has visited the given attraction.
+  """
+  @spec visited?(t, Attraction.t()) :: boolean
+  def visited?(visitor, attraction) do
+    MapSet.member?(visitor.visited, attraction)
   end
 end

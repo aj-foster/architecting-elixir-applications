@@ -55,10 +55,10 @@ defmodule Globolive.Core.EventTest do
     end
   end
 
-  defp create_event_with_attraction(context) do
+  defp create_event_with_attraction(_context) do
     event = event_with_attraction()
     %Event{attractions: [attraction]} = event
 
-    {:ok, Map.merge(context, %{event: event, attraction: attraction})}
+    {:ok, %{event: event, attraction: attraction}}
   end
 end

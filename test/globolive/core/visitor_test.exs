@@ -14,14 +14,24 @@ defmodule Globolive.Core.VisitorTest do
     end
   end
 
+  describe "arrived?/1" do
+    setup :setup_visitor_with_event
+
+    test "returns true when a visitor has arrived", %{visitor: visitor} do
+      visitor = Visitor.mark_arrived(visitor, DateTime.utc_now())
+      assert Visitor.arrived?(visitor)
+    end
+
+    test "returns false when a visitor has not arrived", %{visitor: visitor} do
+      refute Visitor.arrived?(visitor)
+    end
+  end
+
   describe "mark_arrived/2" do
-    test "adds an arrival time" do
-      {name, email} = visitor_fields()
-      event = event_with_attraction()
+    setup :setup_visitor_with_event
 
-      visitor = Visitor.new(name, email, event)
+    test "adds an arrival time", %{visitor: visitor} do
       timestamp = DateTime.utc_now()
-
       assert %Visitor{arrived_at: ^timestamp} = Visitor.mark_arrived(visitor, timestamp)
     end
   end
@@ -56,5 +66,28 @@ defmodule Globolive.Core.VisitorTest do
       assert %Visitor{event: event} = Visitor.mark_checkin(visitor, attraction)
       assert length(event.attractions) == 0
     end
+  end
+
+  describe "visited?/2" do
+    setup :setup_visitor_with_event
+
+    test "returns true for a visited attraction", %{event: event, visitor: visitor} do
+      %Event{attractions: [attraction | _]} = event
+      visitor = Visitor.mark_checkin(visitor, attraction)
+      assert Visitor.visited?(visitor, attraction)
+    end
+
+    test "returns false for an unvisited attraction", %{event: event, visitor: visitor} do
+      %Event{attractions: [attraction | _]} = event
+      refute Visitor.visited?(visitor, attraction)
+    end
+  end
+
+  defp setup_visitor_with_event(_context) do
+    {name, email} = visitor_fields()
+    event = event_with_attraction()
+    visitor = Visitor.new(name, email, event)
+
+    {:ok, %{event: event, visitor: visitor}}
   end
 end
