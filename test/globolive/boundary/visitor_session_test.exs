@@ -1,0 +1,65 @@
+defmodule Globolive.Boundary.VisitorSessionTest do
+  use ExUnit.Case
+  import Globolive.Factory
+
+  alias Globolive.Boundary.{EventManager, VisitorSession}
+  alias Globolive.Core.{Event, Visitor}
+
+  describe "start_link/1" do
+    test "creates a session with an event name" do
+      event = event_with_attraction()
+      start_supervised!({EventManager, events: [event]})
+
+      {name, email} = visitor_fields()
+      assert {:ok, session} = start_supervised({VisitorSession, {name, email, event.name}})
+      assert %Visitor{event: ^event} = VisitorSession.get_visitor(session)
+    end
+
+    test "creates a session with an event struct" do
+      event = event_with_attraction()
+      {name, email} = visitor_fields()
+
+      assert {:ok, session} = start_supervised({VisitorSession, {name, email, event}})
+      assert %Visitor{event: ^event} = VisitorSession.get_visitor(session)
+    end
+  end
+
+  describe "get_visitor/1" do
+    setup :setup_visitor_fields
+
+    test "gets the session's visitor", %{event: event, visitor_fields: fields} do
+      session = start_supervised!({VisitorSession, fields})
+      assert %Visitor{event: ^event} = VisitorSession.get_visitor(session)
+    end
+  end
+
+  describe "mark_arrived/1" do
+    setup :setup_visitor_fields
+
+    test "marks a visitor as arrived", %{visitor_fields: fields} do
+      session = start_supervised!({VisitorSession, fields})
+      visitor = VisitorSession.mark_arrived(session)
+      assert Visitor.arrived?(visitor)
+    end
+  end
+
+  describe "mark_checkin/2" do
+    setup :setup_visitor_fields
+
+    test "marks an attraction as visited", %{event: event, visitor_fields: fields} do
+      session = start_supervised!({VisitorSession, fields})
+
+      %Event{attractions: [attraction | _]} = event
+      visitor = VisitorSession.mark_checkin(session, attraction)
+
+      assert Visitor.visited?(visitor, attraction)
+    end
+  end
+
+  defp setup_visitor_fields(_context) do
+    {name, email} = visitor_fields()
+    event = event_with_attraction()
+
+    {:ok, %{event: event, visitor_fields: {name, email, event}}}
+  end
+end
