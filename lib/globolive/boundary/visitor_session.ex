@@ -4,13 +4,12 @@ defmodule Globolive.Boundary.VisitorSession do
   """
   use GenServer
 
-  alias Globolive.Boundary.EventManager
   alias Globolive.Core.{Attraction, Event, Visitor}
 
-  @type visitor_fields ::
-          {name :: String.t(), email :: String.t(),
-           (event_name :: String.t()) | (event :: Event.t())}
+  @type visitor_fields :: {name :: String.t(), email :: String.t(), event :: Event.t()}
   @type state :: Visitor.t()
+
+  @type session_id :: {email :: String.t(), event_name :: String.t()}
 
   #
   # Public API
@@ -18,23 +17,27 @@ defmodule Globolive.Boundary.VisitorSession do
 
   @spec start_link(visitor_fields) :: GenServer.on_start()
   def start_link(visitor_fields) do
-    GenServer.start_link(__MODULE__, visitor_fields, [])
+    GenServer.start_link(__MODULE__, visitor_fields, name: server(visitor_fields))
   end
 
-  @spec get_visitor(pid) :: Visitor.t()
-  def get_visitor(server) do
-    GenServer.call(server, :get_visitor)
+  @spec get_visitor(pid | session_id) :: Visitor.t()
+  def get_visitor(session) do
+    server(session)
+    |> GenServer.call(:get_visitor)
   end
 
-  @spec mark_arrived(pid, DateTime.t() | nil) :: Visitor.t()
-  def mark_arrived(server, timestamp \\ nil) do
+  @spec mark_arrived(pid | session_id, DateTime.t() | nil) :: Visitor.t()
+  def mark_arrived(session, timestamp \\ nil) do
     timestamp = timestamp || DateTime.utc_now()
-    GenServer.call(server, {:mark_arrived, timestamp})
+
+    server(session)
+    |> GenServer.call({:mark_arrived, timestamp})
   end
 
-  @spec mark_checkin(pid, Attraction.t()) :: Visitor.t()
-  def mark_checkin(server, attraction) do
-    GenServer.call(server, {:mark_checkin, attraction})
+  @spec mark_checkin(pid | session_id, Attraction.t()) :: Visitor.t()
+  def mark_checkin(session, attraction) do
+    server(session)
+    |> GenServer.call({:mark_checkin, attraction})
   end
 
   #
@@ -46,16 +49,6 @@ defmodule Globolive.Boundary.VisitorSession do
   def init({name, email, %Event{} = event}) do
     visitor = Visitor.new(name, email, event)
     {:ok, visitor}
-  end
-
-  def init({name, email, event_name}) do
-    case EventManager.get_event_by_name(event_name) do
-      nil ->
-        {:stop, "Event #{event_name} not found"}
-
-      event ->
-        init({name, email, event})
-    end
   end
 
   @doc false
@@ -74,5 +67,20 @@ defmodule Globolive.Boundary.VisitorSession do
   def handle_call({:mark_checkin, attraction}, _from, visitor) do
     visitor = Visitor.mark_checkin(visitor, attraction)
     {:reply, visitor, visitor}
+  end
+
+  #
+  # Helpers
+  #
+
+  @spec server(visitor_fields | session_id | pid) :: GenServer.name()
+  defp server(pid) when is_pid(pid), do: pid
+
+  defp server({email, event_name}) do
+    {:via, Registry, {Globolive.VisitorRegistry, {email, event_name}}}
+  end
+
+  defp server({_name, email, %Event{name: event_name}}) do
+    {:via, Registry, {Globolive.VisitorRegistry, {email, event_name}}}
   end
 end

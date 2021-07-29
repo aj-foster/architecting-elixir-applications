@@ -14,12 +14,12 @@ defmodule Globolive.Boundary.VisitorSessionTest do
       assert %Visitor{event: ^event} = VisitorSession.get_visitor(session)
     end
 
-    test "creates a session with an event struct" do
+    test "registers the session process" do
       event = event_with_attraction()
       {name, email} = visitor_fields()
 
-      assert {:ok, session} = start_supervised({VisitorSession, {name, email, event}})
-      assert %Visitor{event: ^event} = VisitorSession.get_visitor(session)
+      start_supervised({VisitorSession, {name, email, event}})
+      assert assert %Visitor{event: ^event} = VisitorSession.get_visitor({email, event.name})
     end
   end
 
