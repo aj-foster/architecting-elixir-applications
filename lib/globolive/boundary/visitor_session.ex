@@ -15,6 +15,15 @@ defmodule Globolive.Boundary.VisitorSession do
   # Public API
   #
 
+  @spec child_spec(visitor_fields) :: Supervisor.child_spec()
+  def child_spec({_name, email, event_name} = fields) do
+    %{
+      id: {__MODULE__, {email, event_name}},
+      start: {__MODULE__, :start_link, [fields]},
+      restart: :temporary
+    }
+  end
+
   @spec start_link(visitor_fields) :: GenServer.on_start()
   def start_link(visitor_fields) do
     GenServer.start_link(__MODULE__, visitor_fields, name: server(visitor_fields))
