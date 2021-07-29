@@ -2,16 +2,15 @@ defmodule Globolive.Boundary.VisitorSessionTest do
   use ExUnit.Case
   import Globolive.Factory
 
-  alias Globolive.Boundary.{EventManager, VisitorSession}
+  alias Globolive.Boundary.VisitorSession
   alias Globolive.Core.{Event, Visitor}
 
   describe "start_link/1" do
-    test "creates a session with an event name" do
+    test "creates a new session" do
       event = event_with_attraction()
-      start_supervised!({EventManager, events: [event]})
-
       {name, email} = visitor_fields()
-      assert {:ok, session} = start_supervised({VisitorSession, {name, email, event.name}})
+
+      assert {:ok, session} = start_supervised({VisitorSession, {name, email, event}})
       assert %Visitor{event: ^event} = VisitorSession.get_visitor(session)
     end
 
