@@ -35,7 +35,7 @@ defmodule Globolive.Boundary.EventManager do
   end
 
   @doc "Add an attraction to the event with the given name."
-  @spec add_attraction_to_event(GenServer.name(), String.t(), map) :: :ok
+  @spec add_attraction_to_event(GenServer.name(), String.t(), map) :: Event.t() | nil
   def add_attraction_to_event(server \\ __MODULE__, event_name, attraction_fields) do
     GenServer.call(server, {:add_attraction_to_event, event_name, attraction_fields})
   end
@@ -78,7 +78,7 @@ defmodule Globolive.Boundary.EventManager do
   def handle_call({:add_attraction_to_event, event_name, attraction_fields}, _from, events) do
     case events[event_name] do
       nil ->
-        {:reply, :error, events}
+        {:reply, nil, events}
 
       event ->
         event = Event.add_attraction(event, attraction_fields)

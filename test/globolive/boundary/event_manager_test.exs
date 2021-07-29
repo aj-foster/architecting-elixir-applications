@@ -23,7 +23,7 @@ defmodule Globolive.Boundary.EventManagerTest do
     test "adds an event to the manager" do
       event = event_fields(name: "Event1")
       start_supervised!({EventManager, [name: EM]})
-      assert :ok = EventManager.add_event(EM, event)
+      assert %Event{} = EventManager.add_event(EM, event)
       assert %Event{} = EventManager.get_event_by_name(EM, "Event1")
     end
   end
@@ -32,13 +32,13 @@ defmodule Globolive.Boundary.EventManagerTest do
     test "adds an attraction to an existing event" do
       events = [event_with_attraction(name: "Event1")]
       start_supervised!({EventManager, [events: events, name: EM]})
-      assert :ok = EventManager.add_attraction_to_event(EM, "Event1", attraction_fields())
+      assert %Event{} = EventManager.add_attraction_to_event(EM, "Event1", attraction_fields())
       assert %Event{attraction_count: 2} = EventManager.get_event_by_name(EM, "Event1")
     end
 
     test "returns error for a non-existent event" do
       start_supervised!({EventManager, [name: EM]})
-      assert :error = EventManager.add_attraction_to_event(EM, "Fake", attraction_fields())
+      assert is_nil(EventManager.add_attraction_to_event(EM, "Fake", attraction_fields()))
     end
   end
 
