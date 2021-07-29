@@ -72,7 +72,7 @@ defmodule Globolive.Boundary.EventManager do
   def handle_call({:add_event, event_fields}, _from, events) do
     new_event = Event.new(event_fields)
     events = Map.put(events, new_event.name, new_event)
-    {:reply, :ok, events}
+    {:reply, new_event, events}
   end
 
   def handle_call({:add_attraction_to_event, event_name, attraction_fields}, _from, events) do
@@ -84,7 +84,7 @@ defmodule Globolive.Boundary.EventManager do
         event = Event.add_attraction(event, attraction_fields)
         events = Map.put(events, event_name, event)
 
-        {:reply, :ok, events}
+        {:reply, event, events}
     end
   end
 
