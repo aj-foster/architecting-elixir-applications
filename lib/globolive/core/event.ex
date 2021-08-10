@@ -33,6 +33,15 @@ defmodule Globolive.Core.Event do
   end
 
   @doc """
+  Return identifying information about the given event for use in other parts of the application.
+  """
+  @spec id(t) :: String.t()
+  def id(event) do
+    %__MODULE__{name: name} = event
+    name
+  end
+
+  @doc """
   Add a new attraction with the given attributes to an event.
   """
   @spec add_attraction(t, Enum.t()) :: t

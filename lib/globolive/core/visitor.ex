@@ -43,6 +43,16 @@ defmodule Globolive.Core.Visitor do
   end
 
   @doc """
+  Return identifying information about the given visitor for use in other parts of the application.
+  """
+  @spec id(t) :: {String.t(), String.t()}
+  def id(visitor) do
+    %__MODULE__{email: visitor_email, event: event} = visitor
+    event_name = Event.id(event)
+    {visitor_email, event_name}
+  end
+
+  @doc """
   Mark a visitor as checked in at the event.
   """
   @spec mark_arrived(t, DateTime.t()) :: t

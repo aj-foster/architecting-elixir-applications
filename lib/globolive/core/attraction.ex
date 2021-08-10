@@ -24,6 +24,15 @@ defmodule Globolive.Core.Attraction do
     struct!(__MODULE__, attributes)
   end
 
+  @doc """
+  Return identifying information about the given attraction for use in other parts of the application.
+  """
+  @spec id(t) :: String.t()
+  def id(attraction) do
+    %__MODULE__{name: name} = attraction
+    name
+  end
+
   defimpl Globolive.Core.Schedulable do
     def duration(%Globolive.Core.Attraction{
           start: start,
