@@ -9,6 +9,7 @@ defmodule Globolive.Application do
   @spec start(term, term) :: {:ok, pid} | {:error, term}
   def start(_type, _args) do
     children = [
+      Globolive.Persistence.Repo,
       Globolive.Boundary.EventManager,
       {Registry, [keys: :unique, name: Globolive.VisitorRegistry]},
       Globolive.Boundary.VisitorSupervisor
