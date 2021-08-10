@@ -2,7 +2,7 @@ defmodule Globolive.PersistenceTest do
   use ExUnit.Case
   import Globolive.Factory
 
-  alias Globolive.Core.{Attraction, Event, Visitor}
+  alias Globolive.Core.{Event, Visitor}
   alias Globolive.Persistence
   alias Globolive.Persistence.Checkin
 
