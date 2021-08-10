@@ -5,6 +5,7 @@ defmodule Globolive.Boundary.VisitorSession do
   use GenServer
 
   alias Globolive.Core.{Attraction, Event, Visitor}
+  alias Globolive.Persistence
 
   @type visitor_fields :: {name :: String.t(), email :: String.t(), event :: Event.t()}
   @type state :: Visitor.t()
@@ -43,10 +44,14 @@ defmodule Globolive.Boundary.VisitorSession do
     |> GenServer.call({:mark_arrived, timestamp})
   end
 
-  @spec mark_checkin(pid | session_id, Attraction.t()) :: Visitor.t()
+  @spec mark_checkin(pid | session_id, Attraction.t()) :: Visitor.t() | {:error, term}
   def mark_checkin(session, attraction) do
-    server(session)
-    |> GenServer.call({:mark_checkin, attraction})
+    server = server(session)
+
+    with visitor <- GenServer.call(server, {:mark_checkin, attraction}),
+         {:ok, _checkin} <- Persistence.create_checkin(visitor, attraction) do
+      visitor
+    end
   end
 
   #

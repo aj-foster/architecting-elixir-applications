@@ -7,3 +7,11 @@ config :globolive, Globolive.Persistence.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost"
+
+if Mix.env() == :test do
+  config :globolive, Globolive.Persistence.Repo,
+    database: "globolive_test",
+    pool: Ecto.Adapters.SQL.Sandbox
+
+  config :logger, level: :warn
+end
