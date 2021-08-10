@@ -23,6 +23,9 @@ defmodule Globolive.MixProject do
   defp elixirc_paths(_), do: ["lib"]
 
   defp deps do
-    []
+    [
+      {:ecto_sql, "~> 3.0"},
+      {:postgrex, ">= 0.0.0"}
+    ]
   end
 end
