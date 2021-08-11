@@ -7,5 +7,7 @@ defmodule Globolive.Web.Router do
 
   scope "/api", Globolive.Web do
     pipe_through :api
+
+    post "/v1/checkin", CheckinController, :create
   end
 end
