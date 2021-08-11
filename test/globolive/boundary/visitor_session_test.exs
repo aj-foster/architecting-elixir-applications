@@ -3,7 +3,7 @@ defmodule Globolive.Boundary.VisitorSessionTest do
   import Globolive.Factory
 
   alias Globolive.Boundary.VisitorSession
-  alias Globolive.Core.{Event, Visitor}
+  alias Globolive.Core.{Attraction, Event, Visitor}
 
   describe "start_link/1" do
     test "creates a new session" do
@@ -49,7 +49,8 @@ defmodule Globolive.Boundary.VisitorSessionTest do
       session = start_supervised!({VisitorSession, fields})
 
       %Event{attractions: [attraction | _]} = event
-      visitor = VisitorSession.mark_checkin(session, attraction)
+      attraction_name = Attraction.id(attraction)
+      visitor = VisitorSession.mark_checkin(session, attraction_name)
 
       assert Visitor.visited?(visitor, attraction)
     end

@@ -4,7 +4,7 @@ defmodule Globolive.Persistence do
   """
   import Ecto.Query
 
-  alias Globolive.Core.{Attraction, Visitor}
+  alias Globolive.Core.Visitor
   alias Globolive.Persistence.{Checkin, Repo}
 
   @doc """
@@ -23,10 +23,9 @@ defmodule Globolive.Persistence do
   @doc """
   Record a checkin for the given visitor at the given attraction.
   """
-  @spec create_checkin(Visitor.t(), Attraction.t()) :: {:ok, Checkin.t()} | {:error, term}
-  def create_checkin(visitor, attraction) do
+  @spec create_checkin(Visitor.t(), String.t()) :: {:ok, Checkin.t()} | {:error, term}
+  def create_checkin(visitor, attraction_name) do
     {visitor_email, event_name} = Visitor.id(visitor)
-    attraction_name = Attraction.id(attraction)
 
     %{
       visitor_email: visitor_email,
