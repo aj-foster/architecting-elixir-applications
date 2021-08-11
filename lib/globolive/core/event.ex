@@ -56,6 +56,14 @@ defmodule Globolive.Core.Event do
   end
 
   @doc """
+  Get an attraction based on its ID.
+  """
+  @spec get_attraction(t, String.t()) :: Attraction.t() | nil
+  def get_attraction(event, attraction_name) do
+    Enum.find(event.attractions, fn attraction -> Attraction.id(attraction) == attraction_name end)
+  end
+
+  @doc """
   Remove an attraction, e.g. when a visitor checks in to it.
   """
   @spec remove_attraction(t, Attraction.t()) :: t

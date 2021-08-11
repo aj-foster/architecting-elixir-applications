@@ -43,6 +43,14 @@ defmodule Globolive.Core.Visitor do
   end
 
   @doc """
+  Get the event for the given visitor.
+  """
+  @spec get_event(t) :: Event.t()
+  def get_event(visitor) do
+    visitor.event
+  end
+
+  @doc """
   Return identifying information about the given visitor for use in other parts of the application.
   """
   @spec id(t) :: {String.t(), String.t()}

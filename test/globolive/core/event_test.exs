@@ -35,6 +35,18 @@ defmodule Globolive.Core.EventTest do
     end
   end
 
+  describe "get_attraction/2" do
+    setup :create_event_with_attraction
+
+    test "gets an attraction by ID", %{event: event, attraction: attraction} do
+      assert attraction == Event.get_attraction(event, attraction.name)
+    end
+
+    test "returns nil when attraction not found", %{event: event} do
+      assert is_nil(Event.get_attraction(event, "Fake"))
+    end
+  end
+
   describe "remove_attraction/2" do
     setup :create_event_with_attraction
 

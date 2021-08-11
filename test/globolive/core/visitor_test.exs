@@ -27,6 +27,14 @@ defmodule Globolive.Core.VisitorTest do
     end
   end
 
+  describe "get_event/1" do
+    setup :setup_visitor_with_event
+
+    test "returns the associated event", %{event: event, visitor: visitor} do
+      assert event == Visitor.get_event(visitor)
+    end
+  end
+
   describe "mark_arrived/2" do
     setup :setup_visitor_with_event
 
