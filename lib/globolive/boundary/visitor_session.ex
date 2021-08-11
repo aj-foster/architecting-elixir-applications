@@ -10,12 +10,13 @@ defmodule Globolive.Boundary.VisitorSession do
   @type visitor_fields :: {name :: String.t(), email :: String.t(), event :: Event.t()}
   @type state :: Visitor.t()
 
-  @type session_id :: {email :: String.t(), event_name :: String.t()}
+  @type session_id :: pid | {email :: String.t(), event_name :: String.t()}
 
   #
   # Public API
   #
 
+  @doc false
   @spec child_spec(visitor_fields) :: Supervisor.child_spec()
   def child_spec({_name, email, event_name} = fields) do
     %{
@@ -25,18 +26,21 @@ defmodule Globolive.Boundary.VisitorSession do
     }
   end
 
+  @doc "Start a Visitor Session process."
   @spec start_link(visitor_fields) :: GenServer.on_start()
   def start_link(visitor_fields) do
     GenServer.start_link(__MODULE__, visitor_fields, name: server(visitor_fields))
   end
 
-  @spec get_visitor(pid | session_id) :: Visitor.t()
+  @doc "Get a Visitor struct from the session."
+  @spec get_visitor(session_id) :: Visitor.t()
   def get_visitor(session) do
     server(session)
     |> GenServer.call(:get_visitor)
   end
 
-  @spec mark_arrived(pid | session_id, DateTime.t() | nil) :: Visitor.t()
+  @doc "Mark the visitor as arrived at the event."
+  @spec mark_arrived(session_id, DateTime.t() | nil) :: Visitor.t()
   def mark_arrived(session, timestamp \\ nil) do
     timestamp = timestamp || DateTime.utc_now()
 
@@ -44,7 +48,8 @@ defmodule Globolive.Boundary.VisitorSession do
     |> GenServer.call({:mark_arrived, timestamp})
   end
 
-  @spec mark_checkin(pid | session_id, String.t()) :: Visitor.t() | {:error, term}
+  @doc "Check in the visitor at the given attraction."
+  @spec mark_checkin(session_id, String.t()) :: Visitor.t() | {:error, term}
   def mark_checkin(session, attraction_name) do
     server = server(session)
 

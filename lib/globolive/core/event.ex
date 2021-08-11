@@ -73,6 +73,7 @@ defmodule Globolive.Core.Event do
   end
 
   defimpl Globolive.Core.Schedulable do
+    @spec duration(Globolive.Core.Event.t()) :: non_neg_integer
     def duration(%Globolive.Core.Event{
           start: start,
           finish: finish

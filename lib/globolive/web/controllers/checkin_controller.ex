@@ -1,4 +1,7 @@
 defmodule Globolive.Web.CheckinController do
+  @moduledoc """
+  Provides controller action for checking in visitors at attractions.
+  """
   use Globolive.Web, :controller
 
   alias Plug.Conn

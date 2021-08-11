@@ -34,6 +34,7 @@ defmodule Globolive.Core.Attraction do
   end
 
   defimpl Globolive.Core.Schedulable do
+    @spec duration(Globolive.Core.Attraction.t()) :: non_neg_integer
     def duration(%Globolive.Core.Attraction{
           start: start,
           finish: finish
