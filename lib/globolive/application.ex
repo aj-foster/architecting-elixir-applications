@@ -9,10 +9,20 @@ defmodule Globolive.Application do
   @spec start(term, term) :: {:ok, pid} | {:error, term}
   def start(_type, _args) do
     children = [
+      # Persistence
+      #
       Globolive.Persistence.Repo,
+
+      # Boundary
+      #
       Globolive.Boundary.EventManager,
       {Registry, [keys: :unique, name: Globolive.VisitorRegistry]},
-      Globolive.Boundary.VisitorSupervisor
+      Globolive.Boundary.VisitorSupervisor,
+
+      # Web
+      #
+      {Phoenix.PubSub, name: Globolive.Web.PubSub},
+      Globolive.Web.Endpoint
     ]
 
     opts = [strategy: :one_for_one, name: Globolive.Supervisor]
