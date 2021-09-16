@@ -1,6 +1,6 @@
 # Architecting Elixir Applications with OTP
 
-This repository contains a demonstration app for the Pluralsight course _Architecting Elixir Applications with OTP_.
+This repository contains a demonstration app for the Pluralsight course [Architecting Elixir Applications with OTP](https://www.pluralsight.com/courses/elixir-architecting-applications-otp).
 
 It has the following parts (in order of construction):
 
